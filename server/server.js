@@ -4,7 +4,7 @@ const path = require('path');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
 //This is not going to be needed anymore
-const routes = require('./routes');
+//const routes = require('./routes');
 
 const app = express();
 
@@ -24,15 +24,17 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 //this will be taken out as well
-app.use(routes);
+//app.use(routes);
 
 const startApolloServer = async (typeDefs, resolvers) => {
   await server.start();
   server.applyMiddleware({ app });
 
-db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-})
-};
-
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+    })
+  })
+  };
 startApolloServer(typeDefs, resolvers);
